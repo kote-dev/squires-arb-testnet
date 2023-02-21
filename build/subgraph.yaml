@@ -1,0 +1,95 @@
+specVersion: 0.0.2
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Squires
+    network: goerli
+    source:
+      address: "0x7B43CC9F7d3c230c55D2dFe677C711E3783bc376"
+      abi: Squires
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - ApprovalForAll
+        - OwnershipTransferred
+        - Transfer
+      abis:
+        - name: Squires
+          file: Squires\abis\Squires.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: Squires\Squires.wasm
+  - kind: ethereum
+    name: SquiresRings
+    network: goerli
+    source:
+      address: "0x9289908164843f14FA67684FdfBc40e778db444B"
+      abi: SquireRings
+      startBlock: 8219401
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Squire
+        - InventoryItem
+      abis:
+        - name: SquireRings
+          file: SquiresRings\abis\SquireRings.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleItemTransfer
+      file: Squires\Squires.wasm
+  - kind: ethereum
+    name: SquirePotions
+    network: goerli
+    source:
+      address: "0xfc6fc6bc755FCe9449ac082aE88a4ACC881e3412"
+      abi: SquirePotions
+      startBlock: 8219401
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Squire
+        - InventoryItem
+      abis:
+        - name: SquirePotions
+          file: SquirePotions\abis\SquirePotions.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleItemTransfer
+      file: Squires\Squires.wasm
+  - kind: ethereum
+    name: SquireTrinkets
+    network: goerli
+    source:
+      address: "0x96b273dCB8b4c0aa736694B2580DD3A23762E819"
+      abi: SquireTrinkets
+      startBlock: 8219401
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Squire
+        - InventoryItem
+      abis:
+        - name: SquireTrinkets
+          file: SquireTrinkets\abis\SquireTrinkets.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleItemTransfer
+      file: Squires\Squires.wasm

@@ -1,7 +1,7 @@
 {
-  "goerli": {
+  "arbitrum-goerli": {
     "Squires": {
-      "address": "0x8255D30CaF3559db22104aB412698fbd65d6E77f"
+      "address": "0x7B43CC9F7d3c230c55D2dFe677C711E3783bc376"
     }
   }
 }

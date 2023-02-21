@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
   Squires,
   Approval,
@@ -6,74 +6,130 @@ import {
   OwnershipTransferred,
   Transfer
 } from "../generated/Squires/Squires"
-import { ExampleEntity } from "../generated/schema"
+import { TransferSingle } from '../generated/SquirePotions/SquirePotions';
+import {ItemData} from '../generated/SquirePotions/ItemData';
+import { Squire, InventoryItem } from "../generated/schema"
 
-export function handleApproval(event: Approval): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+export function handleTransfer(event: Transfer): void {
+  let squire = Squire.load(event.params.tokenId.toString());
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+  if(!squire) squire = new Squire(event.params.tokenId.toString());
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
+  let contract = Squires.bind(event.address);
+
+  let tokenId = event.params.tokenId;
+
+  let faith = contract.faithByTokenId(tokenId);
+  let luck = contract.luckByTokenId(tokenId);
+  let strength = contract.strengthByTokenId(tokenId);
+  let type = contract.squireTypeByTokenId(tokenId);
+  let wisdom = contract.wisdomByTokenId(tokenId);
+  let genesis = contract.genesisByTokenId(tokenId);
+
+  let tf = "";
+  let image = "";
+  
+  squire.faith = faith;
+  squire.luck = luck;
+  squire.strength = strength;
+  squire.type = type;
+  squire.wisdom = wisdom;
+  squire.genesis = genesis;
+  squire.owner = event.params.to.toHexString();
+
+  if (type.toI32() == 1 && genesis.toI32() === 0) {
+    tf = "Strength";
+    image = "https://knightsoftheether.com/squires/images/strength.png";
+
+    squire.typename = tf;
+    squire.image = image;
   }
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
+  if (type.toI32() == 2 && genesis.toI32() === 0) {
+      tf = "Wisdom";
+      image = "https://knightsoftheether.com/squires/images/wisdom.png";
 
-  // Entity fields can be set based on event parameters
-  entity.owner = event.params.owner
-  entity.approved = event.params.approved
+      squire.typename = tf;
+      squire.image = image;
+  }
 
-  // Entities can be written to the store with `.save()`
-  entity.save()
+  if (type.toI32() == 3 && genesis.toI32() === 0) {
+      tf = "Luck";
+      image = "https://knightsoftheether.com/squires/images/luck.png";
 
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
+      squire.typename = tf;
+      squire.image = image;
+  }
 
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.balanceOf(...)
-  // - contract.baseURI(...)
-  // - contract.checkAllowedContracts(...)
-  // - contract.faithByTokenId(...)
-  // - contract.genesisByTokenId(...)
-  // - contract.getApproved(...)
-  // - contract.isApprovedForAll(...)
-  // - contract.luckByTokenId(...)
-  // - contract.name(...)
-  // - contract.owner(...)
-  // - contract.ownerOf(...)
-  // - contract.squireTypeByTokenId(...)
-  // - contract.strengthByTokenId(...)
-  // - contract.supportsInterface(...)
-  // - contract.symbol(...)
-  // - contract.tokenByIndex(...)
-  // - contract.tokenOfOwnerByIndex(...)
-  // - contract.tokenURI(...)
-  // - contract.tokensOfOwner(...)
-  // - contract.total(...)
-  // - contract.totalSupply(...)
-  // - contract.upgradeAmountByTokenId(...)
-  // - contract.wisdomByTokenId(...)
+  if (type.toI32() == 4 && genesis.toI32() === 0) {
+      tf = "Faith";
+      image = "https://knightsoftheether.com/squires/images/faith.png";
+
+      squire.typename = tf;
+      squire.image = image;
+  }
+
+  if (type.toI32() == 1 && genesis.toI32() == 1) {
+      tf = "Genesis Strength";
+      image = "https://knightsoftheether.com/squires/images/strengthG.png";
+
+      squire.typename = tf;
+      squire.image = image;
+  }
+
+  if (type.toI32() == 2 && genesis.toI32() == 1) {
+      tf = "Genesis Wisdom";
+      image = "https://knightsoftheether.com/squires/images/wisdomG.png";
+
+      squire.typename = tf;
+      squire.image = image;
+  }
+
+  if (type.toI32() == 3 && genesis.toI32() == 1) {
+      tf = "Genesis Luck";
+      image = "https://knightsoftheether.com/squires/images/luckG.png";
+
+      squire.typename = tf;
+      squire.image = image;
+  }
+
+  if (type.toI32() == 4 && genesis.toI32() == 1) {
+      tf = "Genesis Faith";
+      image = "https://knightsoftheether.com/squires/images/faithG.png";
+
+      squire.typename = tf;
+      squire.image = image;
+  }
+
+  squire.save();
 }
 
-export function handleApprovalForAll(event: ApprovalForAll): void {}
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+export function handleItemTransfer(event: TransferSingle): void {
 
-export function handleTransfer(event: Transfer): void {}
+  let inventoryItem = InventoryItem.load(event.params.to.toHexString() + " " + event.params.id.toString() + " " + event.address.toHexString());
+
+  if(!inventoryItem) {
+    inventoryItem = new InventoryItem(event.params.to.toHexString() + " " + event.params.id.toString() + " " + event.address.toHexString());
+    inventoryItem.itemid = event.params.id;
+    inventoryItem.itemamount = event.params.value;
+    inventoryItem.owner = event.params.to.toHexString();
+    inventoryItem.contract = event.address.toHexString();
+  } else {
+    inventoryItem.itemamount = inventoryItem.itemamount.plus(event.params.value);
+  }
+
+  inventoryItem.save();
+
+  if(Address.fromString("0x0000000000000000000000000000000000000000").equals(event.params.from))
+    return;
+
+
+  let otherInventory = InventoryItem.load(event.params.from.toHexString() + " " + event.params.id.toString() + " " + event.address.toHexString());
+
+  if(otherInventory) {
+    otherInventory.itemamount.minus(event.params.value);
+
+    otherInventory.save();
+  }
+}
