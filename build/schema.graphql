@@ -17,4 +17,6 @@ type InventoryItem @entity {
   itemamount: BigInt!
   owner: String!
   contract: String!
+  name: String!
+  image: String!
 }

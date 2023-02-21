@@ -10,6 +10,11 @@ import { TransferSingle } from '../generated/SquirePotions/SquirePotions';
 import {ItemData} from '../generated/SquirePotions/ItemData';
 import { Squire, InventoryItem } from "../generated/schema"
 
+const RING_NAMES = ["Gold Ring of Burn Defense", "Gold Ring of Avoidance", "Steel Ring of Fiendsbane", "Titanium Ring of Fey Resistance", "Gold Ring of Energy", "Titanium Ring of the Forest", "Silver Ring of Restoration", "Bronze Ring of Alchemy", "Platinum Ring of Confusion", "Rose Gold Ring of Reaction", "Diamond Ring of Spikes", "Brass Ring of Advantage", "Kyanite Ring of Courage", "Gold Ring of Ingenuity", "Silver Ring of the Deep Sleep", "Gold Ring of Combustion", "Silver Ring of Duplication", "Brass Ring of Quick Reflexes", "Marble Ring of Retention", "Pearl Ring of Spirit", "Stone Ring of Increase", "Steel Ring of Protection", "Gold Ring of Determination", "Amber Ring of Withstanding", "Etheric Ring of Renewal"]
+const POTION_NAMES = ["Luck Potion", "Levitation Potion", "Strong Brew", "Pava Root Potion", "Spring Water Flask", "Mirroring Potion", "Phial of Defense", "Slime Vial", "Ichor Draft", "Holy Water", "Murky Flask", "Arcane Brew", "Berserkers Brew", "Spirit Vial", "Flask of Resolve", "Lucidity Elixir", "Philter of Redemption", "Lavender Extract", "Trippie Draught", "Phantom Phial", "Bloodlust Flask", "Misty Phial", "Spirit Elixir", "Dew Drop Vial", "Master Brew"]
+const TRINKET_NAMES = ["Wee Red Mushroom", "Pine Resin", "Birdcage", "Glowing Rune", "Ether Crystal", "Rabbit Foot", "Poisonous Frog", "Acorns", "Torch", "Dream Amulet", "Dusty Scroll", "Crustacean Claw", "Goblet", "Draca Fangs", "Gargoyle", "Bat Wing", "Runic Tome", "Lucky Die", "Golem Eye", "Phoenix Egg", "Abyssal Talisman", "Enchanted Goggles", "Magic Coinpurse", "Hand Candle", "Mask of Valathor", "Wild Cucumber", "Underdark Egg"]
+
+
 export function handleTransfer(event: Transfer): void {
   let squire = Squire.load(event.params.tokenId.toString());
 
@@ -107,7 +112,29 @@ export function handleTransfer(event: Transfer): void {
 
 export function handleItemTransfer(event: TransferSingle): void {
 
+  let itemType = '';
+  let itemNames = POTION_NAMES;
+
+  if(Address.fromString("0xfc6fc6bc755FCe9449ac082aE88a4ACC881e3412").equals(event.address)) {
+    itemType = "potion";
+    itemNames = POTION_NAMES;
+  }
+
+  if(Address.fromString("0x9289908164843f14FA67684FdfBc40e778db444B").equals(event.address)) {
+    itemType = "ring";
+    itemNames = RING_NAMES;
+  }
+
+  if(Address.fromString("0x96b273dCB8b4c0aa736694B2580DD3A23762E819").equals(event.address)) {
+    itemType = "trinket";
+    itemNames = TRINKET_NAMES;
+  }
+
+  let baseItemId = event.params.id.toI32() % 100;
+
   let inventoryItem = InventoryItem.load(event.params.to.toHexString() + " " + event.params.id.toString() + " " + event.address.toHexString());
+
+  
 
   if(!inventoryItem) {
     inventoryItem = new InventoryItem(event.params.to.toHexString() + " " + event.params.id.toString() + " " + event.address.toHexString());
@@ -115,6 +142,10 @@ export function handleItemTransfer(event: TransferSingle): void {
     inventoryItem.itemamount = event.params.value;
     inventoryItem.owner = event.params.to.toHexString();
     inventoryItem.contract = event.address.toHexString();
+    inventoryItem.name = itemNames[baseItemId];
+
+    let image = "https://knightsoftheether.com/squires/images/" + itemType.toLowerCase() + "s/" + itemNames[baseItemId].replaceAll(" ", "%20") + ".png";
+    inventoryItem.image = image;
   } else {
     inventoryItem.itemamount = inventoryItem.itemamount.plus(event.params.value);
   }

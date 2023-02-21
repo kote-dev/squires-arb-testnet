@@ -4,7 +4,7 @@ schema:
 dataSources:
   - kind: ethereum
     name: Squires
-    network: goerli
+    network: arbitrum-goerli
     source:
       address: "0x7B43CC9F7d3c230c55D2dFe677C711E3783bc376"
       abi: Squires
@@ -22,18 +22,12 @@ dataSources:
         - name: Squires
           file: ./abis/Squires.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleApproval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/mapping.ts
   - kind: ethereum
     name: SquiresRings
-    network: goerli
+    network: arbitrum-goerli
     source:
       address: "0x9289908164843f14FA67684FdfBc40e778db444B"
       abi: SquireRings
@@ -54,7 +48,7 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum
     name: SquirePotions
-    network: goerli
+    network: arbitrum-goerli
     source:
       address: "0xfc6fc6bc755FCe9449ac082aE88a4ACC881e3412"
       abi: SquirePotions
@@ -75,7 +69,7 @@ dataSources:
       file: ./src/mapping.ts
   - kind: ethereum
     name: SquireTrinkets
-    network: goerli
+    network: arbitrum-goerli
     source:
       address: "0x96b273dCB8b4c0aa736694B2580DD3A23762E819"
       abi: SquireTrinkets

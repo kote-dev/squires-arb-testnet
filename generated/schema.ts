@@ -143,6 +143,8 @@ export class InventoryItem extends Entity {
     this.set("itemamount", Value.fromBigInt(BigInt.zero()));
     this.set("owner", Value.fromString(""));
     this.set("contract", Value.fromString(""));
+    this.set("name", Value.fromString(""));
+    this.set("image", Value.fromString(""));
   }
 
   save(): void {
@@ -204,5 +206,23 @@ export class InventoryItem extends Entity {
 
   set contract(value: string) {
     this.set("contract", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value!.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get image(): string {
+    let value = this.get("image");
+    return value!.toString();
+  }
+
+  set image(value: string) {
+    this.set("image", Value.fromString(value));
   }
 }
